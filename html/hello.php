@@ -34,6 +34,11 @@
 		<p><input type="submit" /></p>
 	</form>
 
+	<form action="details.php" method="post">
+		<p>Database name: <input type="text" name="name" /></p>
+		<p><input type="submit" /></p>
+	</form>
+
 	Hi <?php echo htmlspecialchars($_POST['name']); ?>
 	You are <?php echo (int)$_POST['age']; ?> years old.
 </body>
