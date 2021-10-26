@@ -54,16 +54,12 @@
     <?php 
         $del_stmt = $conn->prepare("DELETE FROM instruments WHERE instrument_id=?;");
         $del_stmt->bind_param('i', $id);
+        $del_stmt_all = $conn->prepare("DELETE FROM instruments");
 
         $select = "SELECT instrument_id, instrument_type FROM instruments;";
         $results = $conn->query($select);
 
         $resar = $results->fetch_all();
-
-
-        if(!$results){
-            echo "Epic Fail";
-        }
 
 
         for($i=0; $i<$results->num_rows; $i++){
@@ -96,7 +92,7 @@
 
         
  
-    function result_to_table($res) {
+    function result_to_table($res, $del_stmt_fun, $del_stmt_all) {
         $nrows = $res->num_rows;
         $ncols = $res->field_count;
         $resar = $res->fetch_all();
@@ -105,7 +101,6 @@
         } else {
             echo "UNDEFINED OFFSET GOOCH";
         }
-        
         ?> 
         <p>
         <?php echo $ncols; ?> columns, <?php echo $nrows; ?> rows.
@@ -145,37 +140,55 @@
                     echo $row;
                 }
 
-                $i = 0;
-                while($i < $nrows) {
-                    echo $i;
+                //$i = 0;
+                //while($i < $nrows) {
+                for($i=0; $i<$res->num_rows; $i++){
+
                     $id = $resar[$i][1];
-                    echo $id;
+                    // if (isset($_POST["checkbox$id"])){
+                    //     $del_stmt_fun->execute();
+                    //     echo "\nWorks?\n";
+                    // }
+                    $id = $resar[$i][0];
+                    if (isset($_POST["checkbox$id"])){
+                        echo $conn->error;
+                        $del_stmt->execute();
+                    }
+                    if (isset($_POST["deleteButton"])){
+                        //echo $conn->error;
+                        $del_stmt_all->execute();
+                    }
             ?>
             <tr>
-            <td><input type="checkbox"
-                name="checkbox<?php echo $id; ?>"
-                value=<?php echo $id ?>
-                />
-            </td>
-                <?php
-                    for ( $j = 0; $j < $ncols; $j++ ) {
-                ?>
                 <td>
-                    <?php echo $resar[$i][$j]; ?>
-                </td>
-                <?php
-                    }
-                ?>        
+                    <input type="checkbox"
+                    name="checkbox<?php echo $id; ?>"
+                    value=<?php echo $id ?>
+                    />
+                </td>   
+                    <?php
+                        for ( $j = 0; $j < $ncols; $j++ ) {
+                    ?>
+                    <td>
+                        <?php echo $resar[$i][$j]; ?>
+                    </td>
+                    <?php
+                        }
+                    ?>        
             </tr>
     <?php
-            $i = $i + 1;
-            } // close first for loop
+            //$i = $i + 1;
+                } // close first for loop
     ?>
         </tbody>
         <p>Delete All Records
+            <!-- <input  type="checkbox"
+                    name="checkbox<?php //echo $id; ?>"
+                    value=<?php //echo $id; ?>
+            /> -->
             <input  type="checkbox"
-                    name="checkbox<?php echo $id; ?>"
-                    value=<?php echo $id; ?>
+                    name="deleteAllButton"
+                    value=<?php //echo $id; ?>
             />
         </p>
         </table>
@@ -186,8 +199,18 @@
 
 
     <?php 
+        // $dbhost = 'localhost';
+        // $dbuser = 'jeligooch';
+        // $dbpass = 'charmander';
+        // $database = 'instrument_rentals'; 
+
+        // $conn = new mysqli($dbhost, $dbuser, $dbpass, $database);
+
+        // $del_stmt = $conn->prepare("DELETE FROM instruments WHERE instrument_id=?;");
+        // $del_stmt->bind_param('i', $id);
+
         $results = $conn->query($select); //adding this line fixed all our "undefined offset" errors
-        result_to_table($results);
+        result_to_table($results, $del_stmt, $del_stmt_all);
     ?>
     
     <input type="submit" name="deleteButton" value="Delete Selected Records" method=POST/>
