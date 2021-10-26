@@ -65,19 +65,15 @@
             echo "Epic Fail";
         }
 
-        echo $resar;
-        echo "Jibraan Goated";
 
         for($i=0; $i<$results->num_rows; $i++){
 
-            echo $resar[$i][0];
-            ?> <br> <?php
-            echo $resar[$i][1];
-            ?> <br> <?php
+            //echo $resar[$i][0];
+            //echo $resar[$i][1];
 
             $id = $resar[$i][0];
             if (isset($_POST["checkbox$id"])){
-                //echo $conn->error;
+                echo $conn->error;
                 $del_stmt->execute();
             }
         }
@@ -116,26 +112,43 @@
         </p>
         <table>
             <thead>
-            <tr>
-                <th>Delete?</th>
+                <tr>
+                    <th>Delete?</th>
 
-                <?php
-                    while ($fld = $res->fetch_field()) {
-                ?>
-                <th><?php echo $fld->name; ?></th>
-                <?php
-                    }
-                ?>
-            </tr>
+                    <?php
+                        while ($fld = $res->fetch_field()) {
+                    ?>
+                    <th>
+                        <?php echo $fld->name; ?>
+                    </th>
+                    <?php
+                        }
+                    ?>
+                </tr>
             </thead>
             <tbody>
 
             <?php
-                //for ($i=0;$i<$nrows; $i++) {
-                    $i = 0;
+
+                
+
+                $test = $res->fetch_array(); //This is showing us that fetch_array is not working on $res
+                if($test) {
+                    echo "WOAH\n";
+                } else {
+                    echo "NO\n";
+                }
+
+                while ($row = $res->fetch_array()){ 
+                                            //Never gets in here
+                    echo "check it\n";
+                    echo $row;
+                }
+
+                $i = 0;
                 while($i < $nrows) {
                     echo $i;
-                    $id = $resar[$i][0];
+                    $id = $resar[$i][1];
                     echo $id;
             ?>
             <tr>
@@ -147,9 +160,9 @@
                 <?php
                     for ( $j = 0; $j < $ncols; $j++ ) {
                 ?>
-                <td><?php 
-                echo "Test";
-                echo $resar[$i][$j]; ?></td>
+                <td>
+                    <?php echo $resar[$i][$j]; ?>
+                </td>
                 <?php
                     }
                 ?>        
@@ -160,20 +173,20 @@
     ?>
         </tbody>
         <p>Delete All Records
-        <input type="checkbox"
-            name="checkbox<?php echo $id; ?>"
-            value=<?php echo $id; ?>
-        />
-    </p>
+            <input  type="checkbox"
+                    name="checkbox<?php echo $id; ?>"
+                    value=<?php echo $id; ?>
+            />
+        </p>
         </table>
     <?php
     } // close function
-    
     ?>
 
 
 
     <?php 
+        $results = $conn->query($select); //adding this line fixed all our "undefined offset" errors
         result_to_table($results);
     ?>
     
