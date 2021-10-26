@@ -92,7 +92,7 @@
 
         
  
-    function result_to_table($res, $del_stmt_fun, $del_stmt_all) {
+    function result_to_table($res, $del_stmt_fun, $del_stmt_all, $conn) {
         $nrows = $res->num_rows;
         $ncols = $res->field_count;
         $resar = $res->fetch_all();
@@ -140,22 +140,15 @@
                     echo $row;
                 }
 
-                //$i = 0;
-                //while($i < $nrows) {
                 for($i=0; $i<$res->num_rows; $i++){
 
-                    $id = $resar[$i][1];
-                    // if (isset($_POST["checkbox$id"])){
-                    //     $del_stmt_fun->execute();
-                    //     echo "\nWorks?\n";
-                    // }
                     $id = $resar[$i][0];
                     if (isset($_POST["checkbox$id"])){
                         echo $conn->error;
                         $del_stmt->execute();
                     }
-                    if (isset($_POST["deleteButton"])){
-                        //echo $conn->error;
+                    if (isset($_POST["deleteAllButton"])){
+                        echo $conn->error;
                         $del_stmt_all->execute();
                     }
             ?>
@@ -177,15 +170,10 @@
                     ?>        
             </tr>
     <?php
-            //$i = $i + 1;
                 } // close first for loop
     ?>
         </tbody>
         <p>Delete All Records
-            <!-- <input  type="checkbox"
-                    name="checkbox<?php //echo $id; ?>"
-                    value=<?php //echo $id; ?>
-            /> -->
             <input  type="checkbox"
                     name="deleteAllButton"
                     value=<?php //echo $id; ?>
@@ -199,18 +187,8 @@
 
 
     <?php 
-        // $dbhost = 'localhost';
-        // $dbuser = 'jeligooch';
-        // $dbpass = 'charmander';
-        // $database = 'instrument_rentals'; 
-
-        // $conn = new mysqli($dbhost, $dbuser, $dbpass, $database);
-
-        // $del_stmt = $conn->prepare("DELETE FROM instruments WHERE instrument_id=?;");
-        // $del_stmt->bind_param('i', $id);
-
         $results = $conn->query($select); //adding this line fixed all our "undefined offset" errors
-        result_to_table($results, $del_stmt, $del_stmt_all);
+        result_to_table($results, $del_stmt, $del_stmt_all, $conn);
     ?>
     
     <input type="submit" name="deleteButton" value="Delete Selected Records" method=POST/>
