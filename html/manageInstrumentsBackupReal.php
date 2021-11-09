@@ -4,10 +4,9 @@
     CSC 362
     10/25/2021
 --> 
-<?php session_start(); ?>
+
 <html>
     <head>
-        <title>manageInstruments.php</title>
 
         <style>
             table, th, td {
@@ -20,10 +19,6 @@
     <body>
         <h1>Delete Records</h1>
         <p>Lab 7 <br> Eli Gooch <br> CSC 362 </p>
-
-    <form action="manageInstruments.php" method=POST >
-    <input type="text" name="enter name" value="username" method=POST/>
-    </form>
     <?php
         /* ----- CONNECTION SETUP ----- */
         ini_set('display_errors', 1);
@@ -48,37 +43,11 @@
             echo "Congratulations!" . "<br>"; 
         }
 
-        /* ----- INSERTION HANDLING ----- */
-        // Add some data into the database, if requested.
-        if(array_key_exists('add_records', $_POST)){
-            $ins_qry = file_get_contents('add_instruments.sql');
-            $reload = true;
-            $conn->query($ins_qry);
-        }
-        
-        /* ----- SELECTION ----- */
-
-        /* ----- DELETION HANDLING ----- */
-        //$del_str = file_get_contents('delete_instruments.sql');
-        $del_stmt = $conn->prepare($del_str);
-        $del_stmt->bind_param('i', $id);
-
-        if (array_key_exists("delbtn", $_POST)){
-            
-        }
-        /* ----- END DELETION HANDLING ----- */
-
-        /* ----- REDIRECT CLIENT ----- */
-        if($reload){
-            header("Location: {$_SERVER['REQUEST_URI']}", true, 303);
-                exit();
-        }
-
     ?>
 
 
 
-    <form action="manageInstruments.php" method=POST>
+    <form action="manageInstrumentsBackup.php" method=POST>
 
     <?php 
         $del_stmt = $conn->prepare("DELETE FROM instruments WHERE instrument_id=?;");
@@ -89,21 +58,20 @@
         $results = $conn->query($select);
 
         $resar = $results->fetch_all();
-
+        
+        $needs_reload = false;
 
         for($i=0; $i<$results->num_rows; $i++){
-
-            //echo $resar[$i][0];
-            //echo $resar[$i][1];
 
             $id = $resar[$i][0];
             if (isset($_POST["checkbox$id"])){
                 echo $conn->error;
                 $del_stmt->execute();
+                $needs_reload = true;
             }
         }
         //Step 1
-        $needs_reload = false;
+        
 
         if(array_key_exists("insertButton", $_POST))
         {
@@ -117,6 +85,11 @@
                 header("Location: {$_SERVER['REQUEST_URI']}", true, 303);
                 exit();
             }
+        }
+        if($needs_reload)
+        {
+            header("Location: {$_SERVER['REQUEST_URI']}", true, 303);
+            exit();
         }
 
         
@@ -154,8 +127,6 @@
 
             <?php
 
-                
-
                 $test = $res->fetch_array(); //This is showing us that fetch_array is not working on $res
                 if($test) {
                     echo "WOAH\n";
@@ -164,7 +135,6 @@
                 }
 
                 while ($row = $res->fetch_array()){ 
-                                            //Never gets in here
                     echo "check it\n";
                     echo $row;
                 }
