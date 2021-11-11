@@ -66,7 +66,7 @@
         /* ----- DELETION HANDLING ----- */
         $del_str = file_get_contents('delete_instruments.sql');
         $del_stmt = $conn->prepare($del_str);
-        echo('TESTTESTESTSTEST');
+        
         echo($del_stmt);
         if($del_stmt) {
             $del_stmt->bind_param('i', $id);
