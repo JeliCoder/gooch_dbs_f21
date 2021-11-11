@@ -23,7 +23,10 @@
 
     <form action="manageInstruments.php" method=POST >
     <input type="text" name="enter name" value="username" method=POST/>
+    <input type="submit" name="deleteButton" value="Remember Me" method=POST/>  
     </form>
+
+    
     <?php
         /* ----- CONNECTION SETUP ----- */
         ini_set('display_errors', 1);
@@ -36,6 +39,8 @@
         $database = 'instrument_rentals'; 
 
         $conn = new mysqli($dbhost, $dbuser, $dbpass, $database);
+
+        $needs_reload = false;
 
         if ($conn->connect_errno) {
             echo "Error: Failed to make a MySQL connection, 
@@ -59,9 +64,13 @@
         /* ----- SELECTION ----- */
 
         /* ----- DELETION HANDLING ----- */
-        //$del_str = file_get_contents('delete_instruments.sql');
+        $del_str = file_get_contents('delete_instruments.sql');
         $del_stmt = $conn->prepare($del_str);
-        $del_stmt->bind_param('i', $id);
+        echo('TESTTESTESTSTEST');
+        echo($del_stmt);
+        if($del_stmt) {
+            $del_stmt->bind_param('i', $id);
+        }
 
         if (array_key_exists("delbtn", $_POST)){
             
@@ -69,7 +78,7 @@
         /* ----- END DELETION HANDLING ----- */
 
         /* ----- REDIRECT CLIENT ----- */
-        if($reload){
+        if($needs_reload){
             header("Location: {$_SERVER['REQUEST_URI']}", true, 303);
                 exit();
         }
@@ -179,6 +188,8 @@
                     if (isset($_POST["deleteAllButton"])){
                         echo $conn->error;
                         $del_stmt_all->execute();
+                        header("Location: {$_SERVER['REQUEST_URI']}", true, 303);
+                        exit();
                     }
             ?>
             <tr>
@@ -225,5 +236,8 @@
     <input type="submit" name="insertButton" value="Insert Rows" method=POST/>
     </form>
 
+
+
     </body>
+
 </html>

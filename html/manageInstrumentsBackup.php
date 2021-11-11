@@ -18,7 +18,7 @@
 
 
     <body>
-        <h1>Delete Records </h1>
+        <h1>Delete Records Test</h1>
         <p>Lab 7 <br> Eli Gooch <br> CSC 362 </p>
     <?php
         /* ----- CONNECTION SETUP ----- */
