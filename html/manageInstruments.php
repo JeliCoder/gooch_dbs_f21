@@ -4,7 +4,10 @@
     CSC 362
     10/25/2021
 --> 
-<?php session_start(); ?>
+<?php 
+    session_start(); 
+        
+?>
 <html>
     <head>
         <title>manageInstruments.php</title>
@@ -66,7 +69,7 @@
         /* ----- DELETION HANDLING ----- */
         $del_str = file_get_contents('delete_instruments.sql');
         $del_stmt = $conn->prepare($del_str);
-        
+
         echo($del_stmt);
         if($del_stmt) {
             $del_stmt->bind_param('i', $id);
