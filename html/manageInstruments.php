@@ -28,7 +28,8 @@
     <input type="text" name="enter name" value="username" method=POST/>
     <input type="submit" name="deleteButton" value="Remember Me" method=POST/>  
     </form>
-
+<!-- You have the input for for the user name, but you do not handle the submission of the form.
+    There is also no use made of sessions or cookies here; you start a session, but do not do anything with it. -->
     
     <?php
         /* ----- CONNECTION SETUP ----- */
